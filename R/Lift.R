@@ -17,12 +17,17 @@
 #' describe(dataset, col1, col2)
 #' }
 
+
 Lift_Table  <-  function(Variable,
                          Fraud_column,df,column_type="categorical"){
 
   if(!(column_type %in% c("categorical", "continuous"))){
     return("Error : column_type must be either 'categorical' or 'continuous'")
   }
+
+  ## install  required packages
+  if (!require("pacman")) install.packages("pacman")
+  pacman::p_load(tidyverse,rlang,data.table)
 
 
 
@@ -47,7 +52,8 @@ Lift_Table  <-  function(Variable,
     d4 = d1[[2]] %>% dplyr::mutate(Fraud_percent=  (n/sum(n))) %>% rename(Fraud_Count =n) %>%  select(-!!Fraud_column)
 
 
-    d5 = dplyr::inner_join(d4,d3, by=  "category")
+    d5 = dplyr::inner_join(d4,d3, by=  "category") %>% mutate(category= as_factor(category))
+
     # d5 = inner_join(d4,d3)
 
     d5  =   d5 %>%  dplyr::mutate(Lift=Fraud_percent/Clean_percent,
@@ -70,7 +76,7 @@ Lift_Table  <-  function(Variable,
     d4 = d1[[2]] %>% dplyr::mutate(Fraud_percent=  (n/sum(n))) %>% rename(Fraud_Count =n) %>%  select(-!!Fraud_column)
 
     # d5 = dplyr::inner_join(d4,d3, by=  as_label(Variable))
-    d5 = dplyr::inner_join(d4,d3, by=  "category")
+    d5 = dplyr::inner_join(d4,d3, by=  "category")%>% mutate(category= as_factor(category))
 
     d5  =   d5 %>%  dplyr::mutate(Lift=Fraud_percent/Clean_percent,
                                   Feaure=as_label(Variable) ) %>% arrange(desc(Lift))
@@ -81,3 +87,25 @@ Lift_Table  <-  function(Variable,
   }
   return(d6)
 }
+
+#################################################################################################
+#  pass  Lift_Table function to  multiple  inputs.with  pmap
+
+#################################################################################################
+
+
+Lifter = function(ctype,cols,df,Fraud_column){
+
+  ctype=ctype
+  cols=rlang::syms(cols)
+  Fraud_column = rlang::enquo(Fraud_column)
+  re=furrr::future_map2(cols,ctype,function(x,y) Lift_Table(Variable=!!x,df=df,
+                                                            Fraud_column=!!Fraud_column,column_type=y))
+  re = as_tibble(data.table::rbindlist(re))
+  return(re)
+}
+
+
+
+
+
