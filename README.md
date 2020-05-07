@@ -4,14 +4,18 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of LiftUtilities is to ...
+The goal of LiftUtilities is to calculate lift ratio for fraud datasets
 
 ## Installation
 
 You can install the released version of LiftUtilities from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("LiftUtilities")
+install.packages(“devtools”)
+library(devtools)
+install_github(“NanaAkwasiAbayieBoateng/LiftUtilities”)
+
+
 ```
 
 ## Example
