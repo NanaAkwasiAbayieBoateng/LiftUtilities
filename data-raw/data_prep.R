@@ -1,5 +1,5 @@
 
-data= tibble::tibble(Fraud= sample(rep(0:1,c(90,10))),
+Liftdata= tibble::tibble(Fraud= sample(rep(0:1,c(90,10))),
                      payeeCity=rep_len(x=1:10, length.out=100),
                      requestedAmountNormalizedCurrency=
                        rep_len(c(100,1000,10000,500,2500), length.out=100),
