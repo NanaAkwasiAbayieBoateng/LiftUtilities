@@ -20,7 +20,7 @@ install_github(“NanaAkwasiAbayieBoateng/LiftUtilities”)
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which shows how to use this package:
 
 ``` r
 library(LiftUtilities)
